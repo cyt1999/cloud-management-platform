@@ -1,4 +1,6 @@
 # cloud-management-platform
+nodejs 18.20.2
+vue 3.2.13
 
 ## Project setup
 ```
