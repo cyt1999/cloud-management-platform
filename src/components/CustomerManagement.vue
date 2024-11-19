@@ -27,8 +27,11 @@
         <el-form-item label="密码">
           <el-input v-model="newCustomer.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="Key">
-          <el-input v-model="newCustomer.key"></el-input>
+        <el-form-item label="Access Key ID">
+          <el-input v-model="newCustomer.access_key_id"></el-input>
+        </el-form-item>
+        <el-form-item label="Access Key Secret">
+          <el-input v-model="newCustomer.access_key_secret"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -52,8 +55,11 @@
         <el-form-item label="密码">
           <el-input v-model="editCustomerData.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="Key">
-          <el-input v-model="editCustomerData.key"></el-input>
+        <el-form-item label="Access Key ID">
+          <el-input v-model="editCustomerData.access_key_id"></el-input>
+        </el-form-item>
+        <el-form-item label="Access Key Secret">
+          <el-input v-model="editCustomerData.access_key_secret"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -72,8 +78,6 @@
       <el-table-column prop="account" label="账号" />
       <!-- 表格列：密码 -->
       <el-table-column prop="password" label="密码" />
-      <!-- 表格列：Key -->
-      <el-table-column prop="key" label="Key" />
       <!-- 表格列：操作 -->
       <el-table-column label="操作">
         <template #default="scope">
@@ -108,7 +112,8 @@ export default {
         cloudType: '',
         account: '',
         password: '',
-        key: ''
+        access_key_id: '',
+        access_key_secret: ''
       },
       // 编辑客户的数据
       editCustomerData: {}
@@ -139,15 +144,7 @@ export default {
     // 新增客户的方法
     async addCustomer() {
       try {
-        // 将前端字段名转换为后端接口期望的字段名
-        const payload = {
-          name: this.newCustomer.name,
-          cloud_platform_type: this.newCustomer.cloudType,
-          account: this.newCustomer.account,
-          password: this.newCustomer.password,
-          key: this.newCustomer.key
-        };
-        await axios.post('/api/customers/', payload);
+        await axios.post('/api/customers/', this.newCustomer);
         this.fetchCustomers(); // 新增后重新获取客户数据
         this.showAddDialog = false; // 关闭对话框
         this.resetNewCustomer(); // 重置新增客户表单
@@ -162,7 +159,8 @@ export default {
         cloudType: '',
         account: '',
         password: '',
-        key: ''
+        access_key_id: '',
+        access_key_secret: ''
       };
     },
     // 打开编辑对话框并设置当前客户数据

@@ -42,3 +42,12 @@ cloud-management-platform/
 ├── README.md
 └── vue.config.js
 ```
+
+安全    
+- 输入校验防止SQL注入
+- 密码加密存储
+- 使用HTTPS协议
+- 限制不必要的信息暴露
+- 使用安全的API端点
+- 所有的api接口都要进行身份验证
+- 所有的api接口都要进行权限控制
