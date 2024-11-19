@@ -19,7 +19,10 @@
           <el-input v-model="newCustomer.name"></el-input>
         </el-form-item>
         <el-form-item label="云平台类型">
-          <el-input v-model="newCustomer.cloudType"></el-input>
+          <el-select v-model="newCustomer.cloud_platform_type" placeholder="请选择云平台类型">
+            <el-option label="阿里云" value="aliyun"></el-option>
+            <el-option label="火山引擎" value="volcengine"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="账号">
           <el-input v-model="newCustomer.account"></el-input>
@@ -47,7 +50,10 @@
           <el-input v-model="editCustomerData.name"></el-input>
         </el-form-item>
         <el-form-item label="云平台类型">
-          <el-input v-model="editCustomerData.cloud_platform_type"></el-input>
+          <el-select v-model="editCustomerData.cloud_platform_type" placeholder="请选择云平台类型">
+            <el-option label="阿里云" value="aliyun"></el-option>
+            <el-option label="火山引擎" value="volcengine"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="账号">
           <el-input v-model="editCustomerData.account"></el-input>
@@ -73,7 +79,11 @@
       <!-- 表格列：客户信息 -->
       <el-table-column prop="name" label="客户信息" />
       <!-- 表格列：云平台类型 -->
-      <el-table-column prop="cloud_platform_type" label="云平台类型" />
+      <el-table-column label="云平台类型">
+        <template #default="scope">
+          {{ getCloudPlatformName(scope.row.cloud_platform_type) }}
+        </template>
+      </el-table-column>
       <!-- 表格列：账号 -->
       <el-table-column prop="account" label="账号" />
       <!-- 表格列：密码 -->
@@ -109,7 +119,7 @@ export default {
       // 新增客户的数据
       newCustomer: {
         name: '',
-        cloudType: '',
+        cloud_platform_type: '',
         account: '',
         password: '',
         access_key_id: '',
@@ -156,7 +166,7 @@ export default {
     resetNewCustomer() {
       this.newCustomer = {
         name: '',
-        cloudType: '',
+        cloud_platform_type: '',
         account: '',
         password: '',
         access_key_id: '',
@@ -211,6 +221,14 @@ export default {
       } catch (error) {
         console.error('删除客户失败:', error);
       }
+    },
+    // 获取云平台名称的方法
+    getCloudPlatformName(type) {
+      const platformNames = {
+        aliyun: '阿里云',
+        volcengine: '火山引擎'
+      };
+      return platformNames[type] || type;
     }
   }
 };
