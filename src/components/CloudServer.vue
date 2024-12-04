@@ -17,50 +17,36 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      servers: [
-        {
-          id: 1,
-          instanceName: '实例1',
-          status: '运行中',
-          spec: '规格A',
-          ip: '192.168.1.1',
-          customer: '客户A',
-          billingType: '按需',
-          creationTime: '2023-01-01',
-          updateTime: '2023-01-10',
-          expiryTime: '2024-01-01',
-          renewalMethod: '自动续费'
-        },
-        {
-          id: 2,
-          instanceName: '实例2',
-          status: '停止',
-          spec: '规格B',
-          ip: '192.168.1.2',
-          customer: '客户B',
-          billingType: '包年',
-          creationTime: '2023-02-01',
-          updateTime: '2023-02-10',
-          expiryTime: '2024-02-01',
-          renewalMethod: '手动续费'
-        }
-      ]
+      servers: []
     };
   },
-  setup() {
-    const router = useRouter();
-
-    const viewDetails = (server) => {
-      router.push({ path: `/server-detail/${server.id}` });
-    };
-
-    return {
-      viewDetails
-    };
+  async created() {
+    await this.fetchServers();
+  },
+  methods: {
+    async fetchServers() {
+      try {
+        const response = await axios.get('/api/cloudservers/');
+        this.servers = response.data.map(server => ({
+          id: server.id,
+          instanceName: server.instance_id,
+          status: server.status === 'running' ? '运行中' : '停止',
+          spec: `CPU: ${server.cpu}, 内存: ${server.memory}GB`,
+          ip: server.public_ip_address,
+          customer: server.customer_name
+        }));
+      } catch (error) {
+        console.error('获取服务器数据失败:', error);
+      }
+    },
+    viewDetails(server) {
+      this.$router.push({ path: `/server-detail/${server.id}` });
+    }
   }
 };
 </script> 
