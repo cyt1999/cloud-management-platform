@@ -6,6 +6,7 @@ import CloudServer from '../components/CloudServer.vue';
 import DomainManagement from '../components/DomainManagement.vue';
 import ServerDetail from '../components/ServerDetail.vue';
 import Login from '../components/Login.vue';
+import AlertRules from '../components/AlertRules.vue';
 
 const routes = [
   { path: '/', redirect: '/login' }, // 根路径重定向到登录页面
@@ -23,7 +24,8 @@ const routes = [
       { path: 'customers', component: CustomerManagement }, // 客户管理页面
       { path: 'cloud-servers', component: CloudServer }, // 云服务器页面
       { path: 'domains', component: DomainManagement }, // 域名管理页面
-      { path: 'server-detail/:id', component: ServerDetail } // 服务器详情页面，带有动态参数
+      { path: 'server-detail/:id', component: ServerDetail }, // 服务器详情页面，带有动态参数
+      { path: 'alert-rules', component: AlertRules }
     ]
   }
 ];
