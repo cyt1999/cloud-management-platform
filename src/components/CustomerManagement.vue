@@ -19,9 +19,23 @@
           <el-input v-model="newCustomer.name"></el-input>
         </el-form-item>
         <el-form-item label="云平台类型">
-          <el-select v-model="newCustomer.cloud_platform_type" placeholder="请选择云平台类型">
+          <el-select v-model="newCustomer.cloud_platform_type" placeholder="请选择云平台类型" @change="handleCloudPlatformChange">
             <el-option label="阿里云" value="aliyun"></el-option>
             <el-option label="火山引擎" value="volcengine"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地区">
+          <el-select 
+            v-model="newCustomer.regions" 
+            multiple 
+            placeholder="请选择地区"
+            :disabled="!newCustomer.cloud_platform_type">
+            <el-option 
+              v-for="region in availableRegions" 
+              :key="region.value" 
+              :label="region.label" 
+              :value="region.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="账号">
@@ -50,9 +64,23 @@
           <el-input v-model="editCustomerData.name"></el-input>
         </el-form-item>
         <el-form-item label="云平台类型">
-          <el-select v-model="editCustomerData.cloud_platform_type" placeholder="请选择云平台类型">
+          <el-select v-model="editCustomerData.cloud_platform_type" placeholder="请���择云平台类型" @change="handleEditCloudPlatformChange">
             <el-option label="阿里云" value="aliyun"></el-option>
             <el-option label="火山引擎" value="volcengine"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地区">
+          <el-select 
+            v-model="editCustomerData.regions" 
+            multiple 
+            placeholder="请选择地区"
+            :disabled="!editCustomerData.cloud_platform_type">
+            <el-option 
+              v-for="region in availableRegions" 
+              :key="region.value" 
+              :label="region.label" 
+              :value="region.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="账号">
@@ -88,6 +116,12 @@
       <el-table-column prop="account" label="账号" />
       <!-- 表格列：密码 -->
       <el-table-column prop="password" label="密码" />
+      <!-- 表格列：地区 -->
+      <el-table-column label="地区">
+        <template #default="scope">
+          {{ formatRegions(scope.row.regions) }}
+        </template>
+      </el-table-column>
       <!-- 表格列：操作 -->
       <el-table-column label="操作">
         <template #default="scope">
@@ -123,10 +157,23 @@ export default {
         account: '',
         password: '',
         access_key_id: '',
-        access_key_secret: ''
+        access_key_secret: '',
+        regions: []
       },
       // 编辑客户的数据
-      editCustomerData: {}
+      editCustomerData: {},
+      // 新增地区相关数据
+      regionMap: {
+        aliyun: [
+          { label: '华北2(北京)', value: 'cn-beijing' },
+          { label: '华东2(上海)', value: 'cn-shanghai' }
+        ],
+        volcengine: [
+          { label: '北京', value: 'cn-beijing' },
+          { label: '上海', value: 'cn-shanghai' }
+        ]
+      },
+      availableRegions: [],
     };
   },
   computed: {
@@ -170,8 +217,10 @@ export default {
         account: '',
         password: '',
         access_key_id: '',
-        access_key_secret: ''
+        access_key_secret: '',
+        regions: []
       };
+      this.availableRegions = [];
     },
     // 打开编辑对话框并设置当前客户数据
     openEditDialog(customer) {
@@ -229,7 +278,27 @@ export default {
         volcengine: '火山引擎'
       };
       return platformNames[type] || type;
-    }
+    },
+    // 处理云平台变更
+    handleCloudPlatformChange(value) {
+      this.newCustomer.regions = []; // 清空已选择的地区
+      this.availableRegions = this.regionMap[value] || [];
+    },
+    // 处理编辑时云平台变更
+    handleEditCloudPlatformChange(value) {
+      this.editCustomerData.regions = []; // 清空已选择的地区
+      this.availableRegions = this.regionMap[value] || [];
+    },
+    // 格式化地区显示
+    formatRegions(regions) {
+      if (!regions || !regions.length) return '-';
+      return regions.map(region => {
+        const platformType = this.editCustomerData.cloud_platform_type;
+        const regionList = this.regionMap[platformType] || [];
+        const regionObj = regionList.find(r => r.value === region);
+        return regionObj ? regionObj.label : region;
+      }).join(', ');
+    },
   }
 };
 </script> 

@@ -31,11 +31,16 @@ export default {
   methods: {
     async fetchServers() {
       try {
-        const response = await axios.get('/api/cloudservers/');
+        const response = await axios.get('/api/cloud-servers/');
         this.servers = response.data.map(server => ({
           id: server.id,
           instanceName: server.instance_id,
-          status: server.status === 'running' ? '运行中' : '停止',
+          // Pending：创建中。
+          // Running：运行中。
+          // Starting：启动中。
+          // Stopping：停止中。
+          // Stopped：已停止。
+          status: server.status === 'Running' ? '运行中' : '停止',
           spec: `CPU: ${server.cpu}, 内存: ${server.memory}GB`,
           ip: server.public_ip_address,
           customer: server.customer_name
